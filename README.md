@@ -1,18 +1,23 @@
 # Password-Manager-CLI-
 📌 Project Overview
+
 This Command-Line Password Manager is a secure, offline solution that allows users to manage credentials with AES-256 encryption using the Fernet module from Python’s cryptography library. The manager provides a menu-driven interface for operations like add, view, search, update, delete, import, export, and auto-generate passwords with full master password protection.
 
 ✅ Key Features
-Feature	Description
-AES-256 Encryption	Uses Fernet to encrypt/decrypt passwords securely
-Master Password Authentication	bcrypt-hashed master password for login with 3-attempt lockout
-Clipboard Cleaning	Securely clears clipboard after copy (optional)
-Auto Password Generator	Strong random password generator
-Secure Import/Export	Encrypted JSON backup and restore
-Activity Logging	Timestamped logs for actions (stored in logs.txt)
-Session Timeout (optional)	Auto logout after inactivity (future scope)
+
+| Feature                        | Description                                                    |
+| ------------------------------ | -------------------------------------------------------------- |
+| AES-256 Encryption             | Uses `Fernet` to encrypt/decrypt passwords securely            |
+| Master Password Authentication | bcrypt-hashed master password for login with 3-attempt lockout |
+| Clipboard Cleaning             | Securely clears clipboard after copy (optional)                |
+| Auto Password Generator        | Strong random password generator                               |
+| Secure Import/Export           | Encrypted JSON backup and restore                              |
+| Activity Logging               | Timestamped logs for actions (stored in `logs.txt`)            |
+| Session Timeout (optional)     | Auto logout after inactivity (future scope)                    |
+
 
 ⚙️ Technology Stack
+
 Language: Python 3.x
 
 Libraries: cryptography, bcrypt, colorama, json, getpass, os, pyperclip, time, datetime
@@ -22,6 +27,7 @@ Data Storage: JSON File (encrypted)
 Platform: Linux/MacOS/Windows CLI
 
 🧩 Project Components
+
 1. password_manager.py
 Main script and CLI interface
 
@@ -35,9 +41,7 @@ Stores bcrypt-hashed master password
 Stores timestamped logs of critical operations
 
 🛠️ Functional Architecture Diagram
-pgsql
-Copy
-Edit
+
 +----------------------+
 |    User Interface    |
 |  (Command Line CLI)  |
@@ -58,7 +62,10 @@ Edit
 | JSON Storage / Export /   |
 | Import / Logging           |
 +----------------------------+
+
+
 🔄 Process Flow
+
 📌 First Run:
 Set master password → hashed with bcrypt → stored in master.key.
 
@@ -90,10 +97,9 @@ Show CLI Menu:
 Log action in logs.txt
 
 🔑 Key Functionalities
+
 🔐 Master Password Authentication
-python
-Copy
-Edit
+
 from getpass import getpass
 import bcrypt
 
@@ -102,10 +108,9 @@ def verify_master_password():
     with open("master.key", "rb") as f:
         hashed = f.read()
     return bcrypt.checkpw(master_password.encode(), hashed)
+
 🔒 AES-256 Encryption / Decryption (Fernet)
-python
-Copy
-Edit
+
 from cryptography.fernet import Fernet
 
 def load_key():
@@ -120,18 +125,16 @@ def decrypt_data(data):
     key = load_key()
     f = Fernet(key)
     return f.decrypt(data).decode()
+
 🔍 Search & Display Entry
-python
-Copy
-Edit
+
 def search_entry(site):
     with open("credentials.json", "r") as f:
         creds = json.load(f)
     return creds.get(site)
+
 🔄 Import / Export (Encrypted JSON)
-python
-Copy
-Edit
+
 def export_data():
     with open("credentials.json", "r") as f:
         data = f.read()
@@ -145,10 +148,9 @@ def import_data():
     data = decrypt_data(encrypted)
     with open("credentials.json", "w") as f:
         f.write(data)
+
 🔍 Sample CLI Menu (Display)
-pgsql
-Copy
-Edit
+
 ========= PASSWORD MANAGER =========
 1. Add Password
 2. View Passwords
@@ -160,18 +162,20 @@ Edit
 8. Generate Strong Password
 9. Exit
 ====================================
+
 🛡️ Security Measures
-Measure	Explanation
-AES-256 (Fernet)	Ensures stored passwords are encrypted and tamper-proof
-bcrypt-hashed master key	Protects master password with salting and slow hashing
-3-attempt lockout	Prevents brute-force login attempts
-Activity Logs	Each action is timestamped and saved in logs.txt
-Clipboard cleaner	Prevents password leakage from system clipboard (optional/future scope)
+
+| Measure                  | Explanation                                                             |
+| ------------------------ | ----------------------------------------------------------------------- |
+| AES-256 (Fernet)         | Ensures stored passwords are encrypted and tamper-proof                 |
+| bcrypt-hashed master key | Protects master password with salting and slow hashing                  |
+| 3-attempt lockout        | Prevents brute-force login attempts                                     |
+| Activity Logs            | Each action is timestamped and saved in `logs.txt`                      |
+| Clipboard cleaner        | Prevents password leakage from system clipboard (optional/future scope) |
+
 
 📁 Folder Structure
-vbnet
-Copy
-Edit
+
 password_manager/
 │
 ├── password_manager.py
