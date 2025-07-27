@@ -1,50 +1,191 @@
 # Password-Manager-CLI-
-This is a Python-based command line password manager that securely stores and manages passwords using AES-256 encryption. The tool provides a simple and intuitive interface for users to add, view, search, update, and delete passwords.
+📌 Project Overview
+This Command-Line Password Manager is a secure, offline solution that allows users to manage credentials with AES-256 encryption using the Fernet module from Python’s cryptography library. The manager provides a menu-driven interface for operations like add, view, search, update, delete, import, export, and auto-generate passwords with full master password protection.
 
-Features
+✅ Key Features
+Feature	Description
+AES-256 Encryption	Uses Fernet to encrypt/decrypt passwords securely
+Master Password Authentication	bcrypt-hashed master password for login with 3-attempt lockout
+Clipboard Cleaning	Securely clears clipboard after copy (optional)
+Auto Password Generator	Strong random password generator
+Secure Import/Export	Encrypted JSON backup and restore
+Activity Logging	Timestamped logs for actions (stored in logs.txt)
+Session Timeout (optional)	Auto logout after inactivity (future scope)
 
-- AES-256 Encryption: Password entries are encrypted with Fernet symmetric encryption before storage.
-- Master Password Protection: The tool requires a master password to access stored credentials, with a 3-attempt lockout feature.
-- Add, View, Search, Update, and Delete Passwords: Users can perform various actions on stored passwords.
-- Auto-generate Strong Passwords: The tool can generate strong passwords on demand.
-- Activity Logging: Every critical operation is logged with timestamps for accountability.
-- Data Export & Import: Users can export data for backup and import from a backup securely.
+⚙️ Technology Stack
+Language: Python 3.x
 
-Requirements
+Libraries: cryptography, bcrypt, colorama, json, getpass, os, pyperclip, time, datetime
 
-- Python 3.x: The tool is built with Python 3 and requires a compatible version.
-- Cryptography: The tool uses the cryptography library for encryption and decryption.
-- Colorama: The tool uses Colorama for colored output in the command line interface.
+Data Storage: JSON File (encrypted)
 
-Usage
+Platform: Linux/MacOS/Windows CLI
 
-1. Run the password manager using python password_manager.py.
-2. On the first run, you'll be asked to set a master password.
-3. Access your stored credentials securely after verifying with the master password.
-4. Perform various actions like add, view, search, update, delete, export, and import from the CLI menu.
+🧩 Project Components
+1. password_manager.py
+Main script and CLI interface
 
-How it Works
+2. data/credentials.json.enc
+Encrypted password storage file
 
-1. Key Derivation: The tool uses PBKDF2 with SHA-256 and a random salt to derive a secure key from the master password.
-2. Encryption: Password entries are encrypted with Fernet symmetric encryption before storage.
-3. Master Password Protection: Without the correct master key, password data remains inaccessible.
-4. Logging: Every critical operation is logged with timestamps for accountability.
+3. master.key
+Stores bcrypt-hashed master password
 
-Security Measures
+4. logs.txt
+Stores timestamped logs of critical operations
 
-- AES-256 Encryption: The tool uses AES-256 encryption to secure password entries.
-- Master Password Protection: The tool requires a master password to access stored credentials.
-- 3-Attempt Lockout: The tool locks out users after 3 incorrect master password attempts.
+🛠️ Functional Architecture Diagram
+pgsql
+Copy
+Edit
++----------------------+
+|    User Interface    |
+|  (Command Line CLI)  |
++----------+-----------+
+           |
+           v
++----------------------+
+|   Master Auth Layer  |<-- bcrypt verification (3-attempt lockout)
++----------+-----------+
+           |
+           v
++-------------------------------+
+| AES-256 Encryption Module     |<-- Fernet (Encrypt/Decrypt)
++-------------------------------+
+           |
+           v
++----------------------------+
+| JSON Storage / Export /   |
+| Import / Logging           |
++----------------------------+
+🔄 Process Flow
+📌 First Run:
+Set master password → hashed with bcrypt → stored in master.key.
 
-Backup and Import
+📌 Normal Use:
+Prompt for master password → check bcrypt hash.
 
-- Data Export: Users can export data for backup securely.
-- Data Import: Users can import data from a backup securely.
+On success → decrypt JSON file with Fernet.
 
-Logging
+Show CLI Menu:
 
-- Activity Logging: Every critical operation is logged with timestamps for accountability.
-- Log File: Logs are stored in a file named logs.txt.
+[1] Add new password
+
+[2] View all
+
+[3] Search entry
+
+[4] Update password
+
+[5] Delete entry
+
+[6] Export (Encrypted)
+
+[7] Import (Encrypted)
+
+[8] Generate password
+
+[9] Quit
+
+Log action in logs.txt
+
+🔑 Key Functionalities
+🔐 Master Password Authentication
+python
+Copy
+Edit
+from getpass import getpass
+import bcrypt
+
+def verify_master_password():
+    master_password = getpass("Enter master password: ")
+    with open("master.key", "rb") as f:
+        hashed = f.read()
+    return bcrypt.checkpw(master_password.encode(), hashed)
+🔒 AES-256 Encryption / Decryption (Fernet)
+python
+Copy
+Edit
+from cryptography.fernet import Fernet
+
+def load_key():
+    return open("secret.key", "rb").read()
+
+def encrypt_data(data):
+    key = load_key()
+    f = Fernet(key)
+    return f.encrypt(data.encode())
+
+def decrypt_data(data):
+    key = load_key()
+    f = Fernet(key)
+    return f.decrypt(data).decode()
+🔍 Search & Display Entry
+python
+Copy
+Edit
+def search_entry(site):
+    with open("credentials.json", "r") as f:
+        creds = json.load(f)
+    return creds.get(site)
+🔄 Import / Export (Encrypted JSON)
+python
+Copy
+Edit
+def export_data():
+    with open("credentials.json", "r") as f:
+        data = f.read()
+    encrypted = encrypt_data(data)
+    with open("backup.enc", "wb") as f:
+        f.write(encrypted)
+
+def import_data():
+    with open("backup.enc", "rb") as f:
+        encrypted = f.read()
+    data = decrypt_data(encrypted)
+    with open("credentials.json", "w") as f:
+        f.write(data)
+🔍 Sample CLI Menu (Display)
+pgsql
+Copy
+Edit
+========= PASSWORD MANAGER =========
+1. Add Password
+2. View Passwords
+3. Search Password
+4. Update Password
+5. Delete Password
+6. Export (Encrypted)
+7. Import (Encrypted)
+8. Generate Strong Password
+9. Exit
+====================================
+🛡️ Security Measures
+Measure	Explanation
+AES-256 (Fernet)	Ensures stored passwords are encrypted and tamper-proof
+bcrypt-hashed master key	Protects master password with salting and slow hashing
+3-attempt lockout	Prevents brute-force login attempts
+Activity Logs	Each action is timestamped and saved in logs.txt
+Clipboard cleaner	Prevents password leakage from system clipboard (optional/future scope)
+
+📁 Folder Structure
+vbnet
+Copy
+Edit
+password_manager/
+│
+├── password_manager.py
+├── master.key
+├── secret.key
+├── logs.txt
+├── data/
+│   ├── credentials.json.enc
+│   └── backup.enc
+
+
+📚 Summary
+This Password Manager provides a balance of security, usability, and portability. Built using Python, it demonstrates key principles in data protection, cryptographic design, and secure application development.
+
 
 Disclaimer
 
