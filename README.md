@@ -1,25 +1,57 @@
 # Password-Manager-CLI-
+This is a Python-based command line password manager that securely stores and manages passwords using AES-256 encryption. The tool provides a simple and intuitive interface for users to add, view, search, update, and delete passwords.
 
-A Python-based Command Line Password Manager with AES-encrypted storage, master password protection, logging, and backup functionality.
+Features
 
-Features AES-256 Encryption using Fernet (with PBKDF2 Key Derivation and Salt) Master Password Protection with 3 Attempt Lockout Add, View, Search, Update, and Delete Passwords securely Auto-generate Strong Passwords on demand Activity Logging to logs.txt for operation tracking Data Export & Import for safe backups and restores CLI-based Interface with simple navigation Built with Python 3, Cryptography, and Colorama
+- AES-256 Encryption: Password entries are encrypted with Fernet symmetric encryption before storage.
+- Master Password Protection: The tool requires a master password to access stored credentials, with a 3-attempt lockout feature.
+- Add, View, Search, Update, and Delete Passwords: Users can perform various actions on stored passwords.
+- Auto-generate Strong Passwords: The tool can generate strong passwords on demand.
+- Activity Logging: Every critical operation is logged with timestamps for accountability.
+- Data Export & Import: Users can export data for backup and import from a backup securely.
 
-Requirements Python 3.x Cryptography
+Requirements
 
-pip install cryptography colorama
+- Python 3.x: The tool is built with Python 3 and requires a compatible version.
+- Cryptography: The tool uses the cryptography library for encryption and decryption.
+- Colorama: The tool uses Colorama for colored output in the command line interface.
 
-Usage Example
+Usage
 
-Run the password manager
-python password_manager.py
-
-On first run, you'll be asked to set a Master Password Access your stored credentials securely after verifying with the Master Password Perform Add, View, Search, Update, Delete, Export, and Import actions from the CLI menu
+1. Run the password manager using python password_manager.py.
+2. On the first run, you'll be asked to set a master password.
+3. Access your stored credentials securely after verifying with the master password.
+4. Perform various actions like add, view, search, update, delete, export, and import from the CLI menu.
 
 How it Works
 
-Key Derivation: Uses PBKDF2 with SHA-256 and a random salt to derive a secure key from your Master Password. Encryption: Password entries are encrypted with Fernet symmetric encryption before storage. Master Password Protection: Without the correct master key, password data remains inaccessible. Logging: Every critical operation is logged with timestamps for accountability. Backup & Import: Allows exporting data for backup and importing from a backup securely.
+1. Key Derivation: The tool uses PBKDF2 with SHA-256 and a random salt to derive a secure key from the master password.
+2. Encryption: Password entries are encrypted with Fernet symmetric encryption before storage.
+3. Master Password Protection: Without the correct master key, password data remains inaccessible.
+4. Logging: Every critical operation is logged with timestamps for accountability.
+
+Security Measures
+
+- AES-256 Encryption: The tool uses AES-256 encryption to secure password entries.
+- Master Password Protection: The tool requires a master password to access stored credentials.
+- 3-Attempt Lockout: The tool locks out users after 3 incorrect master password attempts.
+
+Backup and Import
+
+- Data Export: Users can export data for backup securely.
+- Data Import: Users can import data from a backup securely.
+
+Logging
+
+- Activity Logging: Every critical operation is logged with timestamps for accountability.
+- Log File: Logs are stored in a file named logs.txt.
 
 Disclaimer
 
-This tool is for personal and ethical use only. If you forget your Master Password, your stored data will be irrecoverable. Always ensure your data files are stored securely to prevent unauthorized access.
+- Personal and Ethical Use: This tool is for personal and ethical use only.
+- Master Password Recovery: If you forget your master password, your stored data will be irrecoverable.
+- Secure Data Storage: Always ensure your data files are stored securely to prevent unauthorized access.
+
+
+
 
